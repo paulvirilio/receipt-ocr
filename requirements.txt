@@ -1,5 +1,6 @@
-requests
+pdf2image
 pytesseract
 pillow
 langdetect
+requests
 python-dotenv
