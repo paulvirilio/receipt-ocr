@@ -8,6 +8,7 @@ from PIL import Image
 from dotenv import load_dotenv
 from langdetect import detect
 import json
+import re
 
 # Load environment variables
 load_dotenv()
@@ -107,13 +108,17 @@ def ask_groq(text):
         "messages": messages
     }
     res = requests.post(GROQ_URL, headers=GROQ_HEADERS, json=data)
-    print("🔁 Groq raw response:", res.text)  # Add this
-    
+    print("🔁 Groq raw response:", res.text)
+
     try:
-        return json.loads(res.json()["choices"][0]["message"]["content"])
-    except KeyError:
-        print("❌ Groq extraction failed. Response:")
-        print(res.text)
+        raw = res.json()["choices"][0]["message"]["content"]
+        # Extract only the JSON part using regex
+        match = re.search(r'\{.*\}', raw, re.DOTALL)
+        if not match:
+            raise ValueError("No valid JSON found in Groq response.")
+        return json.loads(match.group())
+    except Exception as e:
+        print("❌ Groq extraction failed. Response:", res.text)
         raise Exception("Extraction failed")
 
 def update_airtable_record(record_id, raw_text, structured_data, status="Success"):
