@@ -73,7 +73,7 @@ def translate_to_english(text):
         {"role": "user", "content": text}
     ]
     data = {
-        "model": "mixtral-8x7b-32768",
+        "model": "llama3-70b-8192",
         "messages": messages
     }
     res = requests.post(GROQ_URL, headers=GROQ_HEADERS, json=data)
@@ -102,7 +102,7 @@ def ask_groq(text):
         {"role": "user", "content": text}
     ]
     data = {
-        "model": "mixtral-8x7b-32768",
+        "model": "llama3-70b-8192",
         "messages": messages
     }
     res = requests.post(GROQ_URL, headers=GROQ_HEADERS, json=data)
