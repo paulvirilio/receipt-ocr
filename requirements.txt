@@ -1,0 +1,5 @@
+requests
+pytesseract
+pillow
+langdetect
+python-dotenv
