@@ -1,0 +1,36 @@
+name: Run Receipt OCR
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Runs every 30 minutes
+  workflow_dispatch:       # Allows manual trigger
+
+jobs:
+  process_receipts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - name: Install Tesseract + dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr \
+            tesseract-ocr-tha \
+            tesseract-ocr-mya \
+            tesseract-ocr-ukr \
+            tesseract-ocr-ben
+          pip install -r requirements.txt
+
+      - name: Run script
+        env:
+          AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python receipt_automation.py
+
