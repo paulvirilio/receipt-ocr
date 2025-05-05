@@ -24,7 +24,8 @@ jobs:
             tesseract-ocr-tha \
             tesseract-ocr-mya \
             tesseract-ocr-ukr \
-            tesseract-ocr-ben
+            tesseract-ocr-ben \
+            poppler-utils
           pip install -r requirements.txt
 
       - name: Run script
