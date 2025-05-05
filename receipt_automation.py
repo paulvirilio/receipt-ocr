@@ -77,7 +77,8 @@ def translate_to_english(text):
         "messages": messages
     }
     res = requests.post(GROQ_URL, headers=GROQ_HEADERS, json=data)
-
+    print("🔁 Groq raw response:", res.text)  # Add this
+    
     try:
         return res.json()["choices"][0]["message"]["content"]
     except KeyError:
@@ -106,7 +107,8 @@ def ask_groq(text):
         "messages": messages
     }
     res = requests.post(GROQ_URL, headers=GROQ_HEADERS, json=data)
-
+    print("🔁 Groq raw response:", res.text)  # Add this
+    
     try:
         return json.loads(res.json()["choices"][0]["message"]["content"])
     except KeyError:
