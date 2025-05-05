@@ -1,7 +1,7 @@
 services:
   - type: cron
     name: receipt-ocr
-    schedule: "0,30 * 24-31 * *"
+    schedule: "*/10 * * * *"
     envVars:
       - key: AIRTABLE_API_KEY
         sync: false
@@ -11,6 +11,11 @@ services:
         sync: false
     buildCommand: ""
     startCommand: |
-      apt-get update && apt-get install -y tesseract-ocr &&
+      apt-get update &&
+      apt-get install -y tesseract-ocr \
+        tesseract-ocr-tha \
+        tesseract-ocr-mya \
+        tesseract-ocr-ukr \
+        tesseract-ocr-ben &&
       pip install -r requirements.txt &&
       python receipt_automation.py

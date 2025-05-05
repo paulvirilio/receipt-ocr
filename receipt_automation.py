@@ -44,7 +44,7 @@ def download_image(url, filename="temp.jpg"):
         f.write(r.content)
 
 def run_ocr(filename="temp.jpg"):
-    text = pytesseract.image_to_string(Image.open(filename))
+    text = pytesseract.image_to_string(Image.open(filename), lang="eng+tha+ukr+mya+ben")
     lang = detect(text)
     return text, lang
 
