@@ -97,8 +97,7 @@ def ask_groq(text):
                 "- Amount (total paid)\n"
                 "- Currency (e.g., USD, THB, MYR)\n"
                 "- Purchase Date (date of purchase)\n"
-                "Return the result as JSON like this:\n"
-                "{\"Vendor\": \"ABC Store\", \"Amount\": 123.45, \"Currency\": \"USD\", \"Purchase Date\": \"2025-05-01\"}"
+                "Return only the result as JSON (no explanation, no backticks)."
             )
         },
         {"role": "user", "content": text}
@@ -108,18 +107,21 @@ def ask_groq(text):
         "messages": messages
     }
     res = requests.post(GROQ_URL, headers=GROQ_HEADERS, json=data)
-    print("🔁 Groq raw response:", res.text)
 
+    # Extract JSON using regex
     try:
-        raw = res.json()["choices"][0]["message"]["content"]
-        # Extract only the JSON part using regex
-        match = re.search(r'\{.*\}', raw, re.DOTALL)
-        if not match:
-            raise ValueError("No valid JSON found in Groq response.")
-        return json.loads(match.group())
+        content = res.json()["choices"][0]["message"]["content"]
+        print("🔁 Groq raw response:", content)
+
+        match = re.search(r'\{.*?\}', content, re.DOTALL)
+        if match:
+            json_block = match.group(0)
+            return json.loads(json_block)
+        else:
+            raise ValueError("No JSON found in Groq response.")
     except Exception as e:
-        print("❌ Groq extraction failed. Response:", res.text)
-        raise Exception("Extraction failed")
+        print(f"❌ Groq extraction failed. Response: {res.text}")
+        raise e
 
 def update_airtable_record(record_id, raw_text, structured_data, status="Success"):
     update_data = {
